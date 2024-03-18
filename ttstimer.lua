@@ -42,10 +42,9 @@ end
 
 --Prettify time output
 function secondsToClock(seconds)
-    local hours = math.floor(seconds / 3600)
-    local minutes = math.floor((seconds % 3600) / 60)
+    local minutes = math.floor(seconds / 60)
     local seconds = seconds % 60
-    return string.format("%02d:%02d:%02d", hours, minutes, seconds)
+    return string.format("%02d:%02d", minutes, seconds)
 end
 
 --Add and remove time functions
@@ -154,7 +153,6 @@ function runTimer()
 end
 
 function updateDisplay()
-    print(timerCount)
     local displayTime = secondsToClock(timerCount)
     self.editButton({index=0,label=displayTime})
 end
