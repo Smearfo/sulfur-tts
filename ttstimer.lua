@@ -39,7 +39,7 @@ function moraleMod(option)
     end
 end
 
-
+--Prettify time output
 function secondsToClock(seconds)
     local hours = math.floor(seconds / 3600)
     local minutes = math.floor((seconds % 3600) / 60)
@@ -47,9 +47,6 @@ function secondsToClock(seconds)
     return string.format("%02d:%02d:%02d", hours, minutes, seconds)
 end
 
--- Example usage:
-local totalSeconds = 9421 -- 1 hour, 1 minute, and 1 second
-print(secondsToClock(totalSeconds)) -- Output: 01:01:01
 
 
 --Creation of buttons and other inputs
@@ -64,7 +61,6 @@ function createInputs()
 		width=300,
 		font_size=200
 	})
-
 	self.createInput({
 		function_owner=self,
 		input_function="moraleMod",
