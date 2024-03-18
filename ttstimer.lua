@@ -1,41 +1,42 @@
+
 -- Refactored code for the Sulfur Timer system. Inspired by that one timer i found on the workshop [attribution here]
 
-timerCount = 0 -- The global timer length
+local timerCount = 5 -- The global timer length
+local running = false
 
-function doTime(length) -- This is the global function for counting time down
-	timerCount = length
-	Wait.time(function() timerCount = timerCount - 1 end, 1, timerCount)
-	if timerCount <= 0 then return(timerCount) end
+function doTime() -- This is the global function for counting time down
+	timing = Wait.time(function() timerCount = timerCount - 1 updateDisplay() if timerCount <= 0 then Wait.stop(timing) print("TIME UP!!!") end end, 1, -1)
 end
 
--- Default step times, don't change these, change the ones in the moraleMod func
-longStep = 90
-medStep = 60
-shortStep = 30
 
+-- Default step times, don't change these, change the ones in the moraleMod func
+longStep = 45
+medStep = 25
+shortStep = 15
 
 -- Change timer global step counts based on given input
-function moraleMod(option)
+function moraleMod(_,_,input)
+    local option = tonumber(input)
     if option == 5 then
-        bigStep = 90
+        longStep = 90
         medStep = 60
-        smallStep = 30
+        shortStep = 30
     elseif option == 4 then
-        bigStep = 60
+        longStep = 60
         medStep = 30
-        smallStep = 15
+        shortStep = 20
     elseif option == 3 then
-        bigStep = 45
+        longStep = 45
         medStep = 25
-        smallStep = 15
+        shortStep = 15
     elseif option == 2 then
-        bigStep = 25
+        longStep = 25
         medStep = 15
-        smallStep = 10
+        shortStep = 10
     elseif option == 1 then
-        bigStep = 10
+        longStep = 10
         medStep = 5
-        smallStep = 3
+        shortStep = 3
     end
 end
 
@@ -47,28 +48,119 @@ function secondsToClock(seconds)
     return string.format("%02d:%02d:%02d", hours, minutes, seconds)
 end
 
-
-
---Creation of buttons and other inputs
-function createInputs()
-	local time=timeToString()
-	self.createButton({
-		label=time,
-		click_function="pauseOrStart",
-		function_owner=self,
-		position={0,0,0},
-		height=300,
-		width=300,
-		font_size=200
-	})
-	self.createInput({
-		function_owner=self,
-		input_function="moraleMod",
-		alignment=3,
-		validation=2,
-		position={0,0,0},
-		font_size=50
-	})
+--Add and remove time functions
+function subTimeShort()
+    if timerCount - shortStep >= 0 then
+        timerCount = timerCount - shortStep
+        updateDisplay()
+    end
+end
+function subTimeMed()
+    if timerCount - medStep >= 0 then
+        timerCount = timerCount - medStep
+        updateDisplay()
+    end
+end
+function subTimeLong()
+    if timerCount - longStep >= 0 then
+        timerCount = timerCount - longStep
+        updateDisplay()
+    end
+end
+function addTimeShort()
+    timerCount = timerCount + shortStep
+    updateDisplay()
+end
+function addTimeMed()
+    timerCount = timerCount + medStep
+    updateDisplay()
+end
+function addTimeLong()
+    timerCount = timerCount + longStep
+    updateDisplay()
 end
 
 
+function createButtons()
+    self.createButton({
+        position={0,0.1,-0.55},
+        width=700,
+        height=300,
+        click_function="runTimer",
+        function_owner=self
+    })
+    self.createButton({
+        click_function="subTimeLong",
+        position={0.4,0.1,0.1},
+        label="L",
+        color={1,0,0},
+        function_owner=self
+    })
+    self.createButton({
+        click_function="subTimeMed",
+        position={0.7,0.1,0.1},
+        label="M",
+        color={1,0,0},
+        function_owner=self
+    })
+    self.createButton({
+        click_function="subTimeShort",
+        position={1,0.1,0.1},
+        label="S",
+        color={1,0,0},
+        function_owner=self
+    })
+    self.createButton({
+        click_function="addTimeLong",
+        position={-0.4,0.1,0.1},
+        label="L",
+        color={0,1,0},
+        function_owner=self
+    })
+    self.createButton({
+        click_function="addTimeMed",
+        position={-0.7,0.1,0.1},
+        label="M",
+        color={0,1,0},
+        function_owner=self
+    })
+    self.createButton({
+        click_function="addTimeShort",
+        position={-1,0.1,0.1},
+        label="S",
+        color={0,1,0},
+        function_owner=self
+    })
+    self.createInput({
+        position={0,0.1,0.1},
+        input_function="moraleMod",
+        label=3,
+        width=200,
+        height=200,
+        alignment=3,
+        font_size=150,
+        function_owner=self
+    })
+end
+
+function runTimer()
+    if running then
+        Wait.stop(timing)
+        running = false
+    else
+       doTime()
+       running = true
+    end
+end
+
+function updateDisplay()
+    print(timerCount)
+    local displayTime = secondsToClock(timerCount)
+    self.editButton({index=0,label=displayTime})
+end
+
+
+
+
+createButtons()
+updateDisplay()
