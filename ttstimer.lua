@@ -1,11 +1,18 @@
 
 -- Refactored code for the Sulfur Timer system. Inspired by that one timer i found on the workshop [attribution here]
 
-local timerCount = 5 -- The global timer length
+local timerCount = 15 -- The global timer length
 local running = false
 
 function doTime() -- This is the global function for counting time down
-	timing = Wait.time(function() timerCount = timerCount - 1 updateDisplay() if timerCount <= 0 then Wait.stop(timing) print("TIME UP!!!") end end, 1, -1)
+	timing = Wait.time(function()
+        timerCount = timerCount - 1
+        updateDisplay() 
+        if timerCount <= 0 then
+            Wait.stop(timing)
+            print("TIME UP!!!")
+        end
+    end, 1, -1)
 end
 
 
@@ -130,6 +137,16 @@ function createButtons()
         color={0,1,0},
         function_owner=self
     })
+    self.createButton({
+        click_function="reset",
+        position={0,0.1,0.55},
+        function_owner=self,
+        label="RESET",
+        width=500,
+        height=200,
+        color={1,0,0.8}
+
+    })
     self.createInput({
         position={0,0.1,0.1},
         input_function="moraleMod",
@@ -150,6 +167,15 @@ function runTimer()
        doTime()
        running = true
     end
+end
+
+function reset()
+    if timing then
+        Wait.stop(timing)
+    end
+    timerCount = 15
+    running = false
+    updateDisplay()
 end
 
 function updateDisplay()
