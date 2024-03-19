@@ -2,7 +2,7 @@
 -- Refactored code for the Sulfur Timer system. Inspired by that one timer i found on the workshop [attribution here]
 
 local timerCount = 15 -- The global timer length
-local running = false
+local running = false -- Whether the timer is running or not
 
 function doTime() -- This is the global function for counting time down
 	timing = Wait.time(function()
