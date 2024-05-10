@@ -3,7 +3,7 @@
 
 local timerCount = 15 -- The starting timer length
 local running = false
-
+local maxHarm = 40
 
 function doTime() -- This is the global function for counting time down
 	timing = Wait.time(function()
@@ -101,7 +101,7 @@ function pawnLink(_, input)
     print(pawnImage)
     self.UI.setAttribute("pawnImage", "image", pawnImage)
     print(pawn)
-    pawn.UI.setXml("<ProgressBar position=\"0 0 -250\" rotation=\"90 0 180\" percentage=\"20\" ></ProgressBar>", {})
+    pawn.UI.setXml("<ProgressBar id=\"harmBar\" position=\"0 0 -250\" rotation=\"90 0 180\" percentage=\"20\" ></ProgressBar>", {})
 end
 
 
@@ -186,9 +186,9 @@ function createButtons()
     })
 end
 
-function pawnHealth()
-    pawn.UI.
-
+function pawnHealth(_,_,harm,_)
+    pawn.UI.setAttribute("harmBar", "percentage", (harm / 40) * 100)
+end
 
 function runTimer(_, _, isAlt)
     if isAlt then
