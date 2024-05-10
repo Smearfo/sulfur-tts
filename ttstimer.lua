@@ -1,8 +1,9 @@
 
 -- Refactored code for the Sulfur Timer system. Inspired by that one timer i found on the workshop [attribution here]
 
-local timerCount = 15 -- The global timer length
-local running = false -- Whether the timer is running or not
+local timerCount = 15 -- The starting timer length
+local running = false
+
 
 function doTime() -- This is the global function for counting time down
 	timing = Wait.time(function()
@@ -86,69 +87,87 @@ function addTimeLong()
     updateDisplay()
 end
 
+function togglesettings(_,isOn)
+    if isOn == "True" then
+        self.UI.show("hiddenSetting")
+    else
+        self.UI.hide("hiddenSetting")
+    end
+end
+
+function pawnLink(_, input)
+    local pawn = getObjectFromGUID(input)
+    local pawnImage = pawn.getCustomObject().image
+    print(pawnImage)
+    self.UI.setAttribute("pawnImage", "image", pawnImage)
+    print(pawn)
+    pawn.UI.setXml("<ProgressBar position=\"0 0 -250\" rotation=\"90 0 180\" percentage=\"20\" ></ProgressBar>", {})
+end
+
 
 function createButtons()
     self.createButton({
-        position={0,0.1,-0.55},
-        width=700,
-        height=300,
+        position={-0.7,0.1,0.73},
+        width=500,
+        height=250,
         click_function="runTimer",
         function_owner=self
     })
     self.createButton({
         click_function="subTimeLong",
-        position={0.4,0.1,0.1},
+        position={0.29,0.1,0.85},
         label="L",
         color={1,0,0},
         function_owner=self
     })
     self.createButton({
         click_function="subTimeMed",
-        position={0.7,0.1,0.1},
+        position={0.1,0.1,0.85},
         label="M",
         color={1,0,0},
         function_owner=self
     })
     self.createButton({
         click_function="subTimeShort",
-        position={1,0.1,0.1},
+        position={-0.1,0.1,0.85},
         label="S",
         color={1,0,0},
         function_owner=self
     })
     self.createButton({
         click_function="addTimeLong",
-        position={-0.4,0.1,0.1},
+        position={0.29,0.1,0.6},
         label="L",
         color={0,1,0},
         function_owner=self
     })
     self.createButton({
         click_function="addTimeMed",
-        position={-0.7,0.1,0.1},
+        position={0.1,0.1,0.6},
         label="M",
         color={0,1,0},
         function_owner=self
     })
     self.createButton({
         click_function="addTimeShort",
-        position={-1,0.1,0.1},
+        position={-0.1,0.1,0.6},
         label="S",
         color={0,1,0},
         function_owner=self
     })
-    self.createButton({
-        click_function="reset",
-        position={0,0.1,0.55},
-        function_owner=self,
-        label="RESET",
-        width=500,
-        height=200,
-        color={1,0,0.8}
+    -- self.createButton({
+    --     click_function="reset",
+    --     position={-0.7,0.1,0.5},
+    --     function_owner=self,
+    --     label="RESET",
+    --     font_size=60,
+    --     width=270,
+    --     height=130,
+    --     color={1,0,0}
 
-    })
+    -- })
     self.createInput({
-        position={0,0.1,0.1},
+        position={0.8,0.1,-0.2},
         input_function="moraleMod",
         label=3,
         width=200,
@@ -157,15 +176,31 @@ function createButtons()
         font_size=150,
         function_owner=self
     })
+    self.createInput({
+        position={0.8,0.1,0.5},
+        input_function="pawnHealth",
+        function_owner=self,
+        height=150,
+        width=150,
+        alignment=3
+    })
 end
 
-function runTimer()
-    if running then
-        Wait.stop(timing)
-        running = false
+function pawnHealth()
+    pawn.UI.
+
+
+function runTimer(_, _, isAlt)
+    if isAlt then
+        reset()
     else
-       doTime()
-       running = true
+        if running then
+            Wait.stop(timing)
+            running = false
+        else
+            doTime()
+            running = true
+        end
     end
 end
 
